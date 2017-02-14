@@ -3,12 +3,14 @@
  * Plugin Name: MC Varnish Cache
  * Plugin URI: https://github.com/umichcreative/mc-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: U-M: Michigan Creative
  * Author URI: http://creative.umich.edu
  */
 
 define( 'MCVARNISH_PATH', dirname( __FILE__ ) . DIRECTORY_SEPARATOR );
+
+include MCVARNISH_PATH .'includes'. DIRECTORY_SEPARATOR .'override.php';
 
 class MCVarnish {
     static public function init()
