@@ -3,7 +3,7 @@
  * Plugin Name: MC Varnish Cache
  * Plugin URI: https://github.com/umichcreative/mc-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: U-M: Michigan Creative
  * Author URI: http://creative.umich.edu
  */
@@ -139,7 +139,7 @@ class MCVarnish {
             $mapParts = parse_url( domain_mapping_siteurl( false ) );
             $urlParts = parse_url( $url );
 
-            if( $url['host'] != $mapParts['host'] ) {
+            if( $urlParts['host'] != $mapParts['host'] ) {
                 $url = str_replace( $urlParts['host'], $mapParts['host'], $url );
             }
         }
