@@ -3,7 +3,7 @@
  * Plugin Name: MC Varnish Cache
  * Plugin URI: https://github.com/umichcreative/mc-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Author: U-M: Michigan Creative
  * Author URI: http://creative.umich.edu
  */
@@ -19,7 +19,7 @@ class MCVarnish {
         if( !class_exists( 'WP_GitHub_Updater' ) ) {
             include_once MCVARNISH_PATH .'includes'. DIRECTORY_SEPARATOR .'updater.php';
         }
-        if( isset( $_GET['force-check'] ) && $_GET['force-check'] ) {
+        if( isset( $_GET['force-check'] ) && $_GET['force-check'] && !defined( 'WP_GITHUB_FORCE_UPDATE' ) ) {
             define( 'WP_GITHUB_FORCE_UPDATE', true );
         }
         if( is_admin() ) {
