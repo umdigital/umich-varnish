@@ -27,8 +27,8 @@ class MCVarnish_Override {
     {
         if( current_user_can( 'administrator' ) || current_user_can( 'editor' ) ) {
             add_meta_box(
-                'mcvarnish-override',
-                __( 'Varnish Cache Settings', 'mcvarnish' ),
+                'umvarnish-override',
+                __( 'Varnish Cache Settings', 'umvarnish' ),
                 array( __CLASS__, 'metaVarnishAdmin' ),
                 null,
                 'side'
@@ -38,17 +38,17 @@ class MCVarnish_Override {
 
     static public function metaVarnishAdmin()
     {
-        wp_nonce_field( 'mcvarnish-settings_nonce', 'mcvarnish-settings_nonce' );
+        wp_nonce_field( 'umvarnish-settings_nonce', 'umvarnish-settings_nonce' );
 
         echo '
         <style type="text/css">
-        #mcvarnish-override .form-table th,
-        #mcvarnish-override .form-table td {
+        #umvarnish-override .form-table th,
+        #umvarnish-override .form-table td {
             padding-top: 10px;
             padding-bottom: 10px;
         }
 
-        #mcvarnish-override .notes {
+        #umvarnish-override .notes {
             font-style: italic;
             font-size: 12px;
             line-height: 1.2;
@@ -71,7 +71,7 @@ class MCVarnish_Override {
         }
 
         // Verify the nonce. If insn't there, stop the script
-        if( !isset( $_POST['mcvarnish-settings_nonce'] ) || !wp_verify_nonce( $_POST['mcvarnish-settings_nonce'], 'mcvarnish-settings_nonce' ) ) return;
+        if( !isset( $_POST['umvarnish-settings_nonce'] ) || !wp_verify_nonce( $_POST['umvarnish-settings_nonce'], 'umvarnish-settings_nonce' ) ) return;
 
         $metaVars = array(
             'disable',
@@ -107,7 +107,7 @@ class MCVarnish_Override {
         echo '
         <tr>
             <th class="form-field">
-                <label for="'. $key .'">'. __( $name, 'mcvarnish' ) .'</label>
+                <label for="'. $key .'">'. __( $name, 'umvarnish' ) .'</label>
             </th>
             <td>
                 <input type="text" id="'. $key .'" name="'. $key .'" value="'. $value .'" />
@@ -138,7 +138,7 @@ class MCVarnish_Override {
         echo '
         <tr>
             <th class="form-field">
-                <label for="'. $key .'">'. __( $name, 'mcvarnish' ) .'</label>
+                <label for="'. $key .'">'. __( $name, 'umvarnish' ) .'</label>
             </th>
             <td>
                 <input type="checkbox" id="'. $key .'" name="'. $key .'" value="'. $value .'" '.( $checked ? ' checked="checked"' : null).' />

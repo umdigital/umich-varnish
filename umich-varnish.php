@@ -64,8 +64,8 @@ class MCVarnish {
 
         /** ADMIN **/
         add_action( 'wp_before_admin_bar_render', array( __CLASS__, 'adminBarRender' ) );
-        add_action( 'wp_ajax_mcvarnish_clear', array( __CLASS__, 'ajaxOnPurge' ) );
-        add_action( 'wp_ajax_nopriv_mcvarnish_clear', array( __CLASS__, 'ajaxOnPurge' ) );
+        add_action( 'wp_ajax_umvarnish_clear', array( __CLASS__, 'ajaxOnPurge' ) );
+        add_action( 'wp_ajax_nopriv_umvarnish_clear', array( __CLASS__, 'ajaxOnPurge' ) );
         add_action( 'wp_footer', array( __CLASS__, 'ajaxCode' ) );
         add_action( 'admin_footer', array( __CLASS__, 'ajaxCode' ) );
     }
@@ -206,7 +206,7 @@ class MCVarnish {
                 'title'  => 'Purge All',
                 'href'   => '#',
                 'meta'   => array(
-                    'onclick' => 'return mcVarnishPurge("all");'
+                    'onclick' => 'return umVarnishPurge("all");'
                 )
             ));
         }
@@ -219,7 +219,7 @@ class MCVarnish {
                     'title'  => 'Purge Page',
                     'href'   => '#',
                     'meta'   => array(
-                        'onclick' => 'return mcVarnishPurge("page");'
+                        'onclick' => 'return umVarnishPurge("page");'
                     )
                 ));
 
@@ -229,7 +229,7 @@ class MCVarnish {
                     'title'  => 'Purge Section',
                     'href'   => '#',
                     'meta'   => array(
-                        'onclick' => 'return mcVarnishPurge("section");'
+                        'onclick' => 'return umVarnishPurge("section");'
                     )
                 ));
             }
@@ -240,9 +240,9 @@ class MCVarnish {
     {
         if( current_user_can( 'administrator' ) || current_user_can( 'editor' ) ) {
             echo '<script type="text/javascript">'."\n";
-            echo "var mcvNonce = '". wp_create_nonce( 'umich-varnish-nonce' ) ."';\n";
-            echo "var mcvAjaxUrl = '". admin_url( 'admin-ajax.php') ."';\n";
-            echo "if( typeof ajaxurl === 'undefined' ) { var ajaxurl = mcvAjaxUrl; }\n";
+            echo "var umvNonce = '". wp_create_nonce( 'umich-varnish-nonce' ) ."';\n";
+            echo "var umvAjaxUrl = '". admin_url( 'admin-ajax.php') ."';\n";
+            echo "if( typeof ajaxurl === 'undefined' ) { var ajaxurl = umvAjaxUrl; }\n";
             echo file_get_contents( MCVARNISH_PATH .'umich-varnish.js' );
             echo '</script>'."\n";
         }

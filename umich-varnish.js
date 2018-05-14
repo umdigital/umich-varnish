@@ -1,24 +1,24 @@
-var mcVarnishTimer     = false;
-var mcVarnishStatusImg = false;
-function mcVarnishPurge( type ) {
-    var mcvData = {
-        nonce : mcvNonce,
-        action: 'mcvarnish_clear',
+var umVarnishTimer     = false;
+var umVarnishStatusImg = false;
+function umVarnishPurge( type ) {
+    var umvData = {
+        nonce : umvNonce,
+        action: 'umvarnish_clear',
         type  : type,
         url   : window.location.href
     };
 
-    if( mcVarnishTimer ) {
-        clearTimeout( mcVarnishTimer );
+    if( umVarnishTimer ) {
+        clearTimeout( umVarnishTimer );
     }
 
-    if( mcVarnishStatusImg === false ) {
-        mcVarnishStatusImg = jQuery('#wp-admin-bar-umich-varnish-root > *:first-child > img');
+    if( umVarnishStatusImg === false ) {
+        umVarnishStatusImg = jQuery('#wp-admin-bar-umich-varnish-root > *:first-child > img');
     }
 
     // show working status icon
-    mcVarnishStatusImg.attr( 'src',
-        mcVarnishStatusImg.attr('src')
+    umVarnishStatusImg.attr( 'src',
+        umVarnishStatusImg.attr('src')
             .replace(/(error|success)\.svg/, 'working.svg')
     ).css({
         visibility: 'visible',
@@ -27,9 +27,9 @@ function mcVarnishPurge( type ) {
     });
 
     // Send purge request
-    jQuery.post( ajaxurl.replace( /^https?:/, window.location.protocol ), mcvData, function( response ){
+    jQuery.post( ajaxurl.replace( /^https?:/, window.location.protocol ), umvData, function( response ){
         if( response.nonce.length ) {
-            mcvNonce = response.nonce;
+            umvNonce = response.nonce;
         }
 
         var resStatus = 'error';
@@ -46,22 +46,22 @@ function mcVarnishPurge( type ) {
         }
 
         // change status icon
-        mcVarnishStatusImg.css({
+        umVarnishStatusImg.css({
             display   : 'none',
             visibility: 'hidden'
         }).attr( 'src',
-            mcVarnishStatusImg.attr('src').replace('working.svg', resStatus +'.svg')
+            umVarnishStatusImg.attr('src').replace('working.svg', resStatus +'.svg')
         ).css('visibility','visible').fadeIn();
 
         // set timer to clear status icon
-        mcVarnishTimer = setTimeout(function(){
-            mcVarnishStatusImg.fadeOut(function(){
-                mcVarnishStatusImg.css({
+        umVarnishTimer = setTimeout(function(){
+            umVarnishStatusImg.fadeOut(function(){
+                umVarnishStatusImg.css({
                     visibility: 'hidden',
                     display   : '',
                     opacity   : ''
                 }).attr( 'src',
-                    mcVarnishStatusImg.attr('src')
+                    umVarnishStatusImg.attr('src')
                         .replace(/(error|success)\.svg/, 'working.svg')
                 );
             });
