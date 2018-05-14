@@ -8,16 +8,16 @@
  * Author URI: http://vpcomm.umich.edu
  */
 
-define( 'MCVARNISH_PATH', dirname( __FILE__ ) . DIRECTORY_SEPARATOR );
+define( 'UMVARNISH_PATH', dirname( __FILE__ ) . DIRECTORY_SEPARATOR );
 
-include MCVARNISH_PATH .'includes'. DIRECTORY_SEPARATOR .'override.php';
+include UMVARNISH_PATH .'includes'. DIRECTORY_SEPARATOR .'override.php';
 
-class MCVarnish {
+class UMVarnish {
     static public function init()
     {
         // UPDATER SETUP
         if( !class_exists( 'WP_GitHub_Updater' ) ) {
-            include_once MCVARNISH_PATH .'includes'. DIRECTORY_SEPARATOR .'updater.php';
+            include_once UMVARNISH_PATH .'includes'. DIRECTORY_SEPARATOR .'updater.php';
         }
         if( isset( $_GET['force-check'] ) && $_GET['force-check'] && !defined( 'WP_GITHUB_FORCE_UPDATE' ) ) {
             define( 'WP_GITHUB_FORCE_UPDATE', true );
@@ -243,7 +243,7 @@ class MCVarnish {
             echo "var umvNonce = '". wp_create_nonce( 'umich-varnish-nonce' ) ."';\n";
             echo "var umvAjaxUrl = '". admin_url( 'admin-ajax.php') ."';\n";
             echo "if( typeof ajaxurl === 'undefined' ) { var ajaxurl = umvAjaxUrl; }\n";
-            echo file_get_contents( MCVARNISH_PATH .'umich-varnish.js' );
+            echo file_get_contents( UMVARNISH_PATH .'umich-varnish.js' );
             echo '</script>'."\n";
         }
     }
@@ -296,4 +296,4 @@ class MCVarnish {
         wp_die();
     }
 }
-MCVarnish::init();
+UMVarnish::init();

@@ -1,6 +1,6 @@
 <?php
 
-class MCVarnish_Override {
+class UMVarnish_Override {
     static public function init()
     {
         add_filter( 'wp_enqueue_scripts', array( __CLASS__, 'headers' ), 999 );
@@ -149,4 +149,4 @@ class MCVarnish_Override {
     }
 }
 
-MCVarnish_Override::init();
+UMVarnish_Override::init();
