@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: MC Varnish Cache
- * Plugin URI: https://github.com/umichcreative/mc-varnish/
+ * Plugin Name: U-M: Varnish Cache
+ * Plugin URI: https://github.com/umdigital/umich-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.1.2
- * Author: U-M: Michigan Creative
- * Author URI: http://creative.umich.edu
+ * Version: 1.1.3
+ * Author: U-M: Digital
+ * Author URI: http://vpcomm.umich.edu
  */
 
 define( 'MCVARNISH_PATH', dirname( __FILE__ ) . DIRECTORY_SEPARATOR );
@@ -29,13 +29,13 @@ class MCVarnish {
                 // this is the name of the folder your plugin lives in
                 'proper_folder_name' => dirname( plugin_basename( __FILE__ ) ),
                 // the github API url of your github repo
-                'api_url' => 'https://api.github.com/repos/umichcreative/mc-varnish',
+                'api_url' => 'https://api.github.com/repos/umdigital/umich-varnish',
                 // the github raw url of your github repo
-                'raw_url' => 'https://raw.githubusercontent.com/umichcreative/mc-varnish/master',
+                'raw_url' => 'https://raw.githubusercontent.com/umdigital/umich-varnish/master',
                 // the github url of your github repo
-                'github_url' => 'https://github.com/umichcreative/mc-varnish',
+                'github_url' => 'https://github.com/umdigital/umich-varnish',
                  // the zip url of the github repo
-                'zip_url' => 'https://github.com/umichcreative/mc-varnish/zipball/master',
+                'zip_url' => 'https://github.com/umdigital/umich-varnish/zipball/master',
                 // wether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
                 'sslverify' => true,
                 // which version of WordPress does your plugin require?
@@ -193,7 +193,7 @@ class MCVarnish {
         if( current_user_can( 'administrator' ) || current_user_can( 'editor' ) ) {
             $wp_admin_bar->add_menu(array(
                 'parent' => false,
-                'id'     => 'mc-varnish-root',
+                'id'     => 'umich-varnish-root',
                 'title'  => 'Varnish Cache <img src="'. plugins_url( 'assets/working.svg', __FILE__ ) .'" style="visibility: hidden;"/>',
                 'href'   => false
             ));
@@ -201,8 +201,8 @@ class MCVarnish {
 
         if( current_user_can( 'administrator' ) ) {
             $wp_admin_bar->add_menu(array(
-                'parent' => 'mc-varnish-root',
-                'id'     => 'mc-varnish-purge-site',
+                'parent' => 'umich-varnish-root',
+                'id'     => 'umich-varnish-purge-site',
                 'title'  => 'Purge All',
                 'href'   => '#',
                 'meta'   => array(
@@ -214,8 +214,8 @@ class MCVarnish {
         if( current_user_can( 'administrator' ) || current_user_can( 'editor' ) ) {
             if( !is_admin() ) {
                 $wp_admin_bar->add_menu(array(
-                    'parent' => 'mc-varnish-root',
-                    'id'     => 'mc-varnish-purge-page',
+                    'parent' => 'umich-varnish-root',
+                    'id'     => 'umich-varnish-purge-page',
                     'title'  => 'Purge Page',
                     'href'   => '#',
                     'meta'   => array(
@@ -224,8 +224,8 @@ class MCVarnish {
                 ));
 
                 $wp_admin_bar->add_menu(array(
-                    'parent' => 'mc-varnish-root',
-                    'id'     => 'mc-varnish-purge-section',
+                    'parent' => 'umich-varnish-root',
+                    'id'     => 'umich-varnish-purge-section',
                     'title'  => 'Purge Section',
                     'href'   => '#',
                     'meta'   => array(
@@ -240,10 +240,10 @@ class MCVarnish {
     {
         if( current_user_can( 'administrator' ) || current_user_can( 'editor' ) ) {
             echo '<script type="text/javascript">'."\n";
-            echo "var mcvNonce = '". wp_create_nonce( 'mc-varnish-nonce' ) ."';\n";
+            echo "var mcvNonce = '". wp_create_nonce( 'umich-varnish-nonce' ) ."';\n";
             echo "var mcvAjaxUrl = '". admin_url( 'admin-ajax.php') ."';\n";
             echo "if( typeof ajaxurl === 'undefined' ) { var ajaxurl = mcvAjaxUrl; }\n";
-            echo file_get_contents( MCVARNISH_PATH .'mc-varnish.js' );
+            echo file_get_contents( MCVARNISH_PATH .'umich-varnish.js' );
             echo '</script>'."\n";
         }
     }
@@ -258,7 +258,7 @@ class MCVarnish {
             'nonce'  => ''
         );
 
-        if( check_ajax_referer( 'mc-varnish-nonce', 'nonce', false ) ) {
+        if( check_ajax_referer( 'umich-varnish-nonce', 'nonce', false ) ) {
             switch( @$_POST['type'] ) {
                 case 'all':
                     // TRIGGER FULL SITE PURGE
@@ -289,7 +289,7 @@ class MCVarnish {
             }
         }
 
-        $return['nonce'] = wp_create_nonce( 'mc-varnish-nonce' );
+        $return['nonce'] = wp_create_nonce( 'umich-varnish-nonce' );
 
         echo json_encode( $return );
 

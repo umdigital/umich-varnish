@@ -13,7 +13,7 @@ function mcVarnishPurge( type ) {
     }
 
     if( mcVarnishStatusImg === false ) {
-        mcVarnishStatusImg = jQuery('#wp-admin-bar-mc-varnish-root > *:first-child > img');
+        mcVarnishStatusImg = jQuery('#wp-admin-bar-umich-varnish-root > *:first-child > img');
     }
 
     // show working status icon
