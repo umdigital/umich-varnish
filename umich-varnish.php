@@ -3,7 +3,7 @@
  * Plugin Name: U-M: Varnish Cache
  * Plugin URI: https://github.com/umdigital/umich-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.1.3
+ * Version: 1.1.4
  * Author: U-M: Digital
  * Author URI: http://vpcomm.umich.edu
  */
@@ -51,7 +51,7 @@ class UMVarnish {
 
         /** GLOBAL CHANGES: FULL SITE PURGE **/
         // Theme Updates
-        add_action( 'switch_theme', array( __CLASS__, 'onThemeChange' ) );
+        add_action( 'switch_theme',         array( __CLASS__, 'onThemeChange' ) );
         add_filter( 'customize_save_after', array( __CLASS__, 'onCustomizerSave' ) );
 
         // Widget Updates
@@ -61,13 +61,17 @@ class UMVarnish {
         // Post Updates
         add_action( 'save_post', array( __CLASS__, 'onPostUpdate' ) );
 
+        // New Comment OR Status Change
+        add_action( 'comment_post',          array( __CLASS__, 'onCommentUpdate' ) );
+        add_action( 'wp_set_comment_status', array( __CLASS__, 'onCommentUpdate' ) );
+
 
         /** ADMIN **/
-        add_action( 'wp_before_admin_bar_render', array( __CLASS__, 'adminBarRender' ) );
-        add_action( 'wp_ajax_umvarnish_clear', array( __CLASS__, 'ajaxOnPurge' ) );
+        add_action( 'wp_before_admin_bar_render',     array( __CLASS__, 'adminBarRender' ) );
+        add_action( 'wp_ajax_umvarnish_clear',        array( __CLASS__, 'ajaxOnPurge' ) );
         add_action( 'wp_ajax_nopriv_umvarnish_clear', array( __CLASS__, 'ajaxOnPurge' ) );
-        add_action( 'wp_footer', array( __CLASS__, 'ajaxCode' ) );
-        add_action( 'admin_footer', array( __CLASS__, 'ajaxCode' ) );
+        add_action( 'wp_footer',                      array( __CLASS__, 'ajaxCode' ) );
+        add_action( 'admin_footer',                   array( __CLASS__, 'ajaxCode' ) );
     }
 
     /****************************/
@@ -99,6 +103,13 @@ class UMVarnish {
     {
         // PURGE POST URL
         self::_purgePage( get_the_permalink( $pID ) );
+    }
+
+    static public function onCommentUpdate( $cID )
+    {
+        $comment = get_comment( $cID );
+
+        self::onPostUpdate( $comment->comment_post_ID );
     }
 
     static private function _purgeAll()
