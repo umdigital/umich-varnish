@@ -1,3 +1,10 @@
+1.2 (2019-06-12)
+================
+convert _purgePage() to private purgePage()
+make sure url passed to purgePage is complete and starts with WP site_url path
+if domains are diff in _purgeURL better update host in url string.
+only show Purge Section IFF permalink_structure exists
+
 1.1.4 (2018-10-29)
 ==================
 Trigger page purge on new comment or comment status change

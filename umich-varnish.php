@@ -3,7 +3,7 @@
  * Plugin Name: U-M: Varnish Cache
  * Plugin URI: https://github.com/umdigital/umich-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.1.4
+ * Version: 1.2
  * Author: U-M: Digital
  * Author URI: http://vpcomm.umich.edu
  */
@@ -102,7 +102,7 @@ class UMVarnish {
     static public function onPostUpdate( $pID )
     {
         // PURGE POST URL
-        self::_purgePage( get_the_permalink( $pID ) );
+        self::purgePage( get_the_permalink( $pID ) );
     }
 
     static public function onCommentUpdate( $cID )
@@ -112,24 +112,24 @@ class UMVarnish {
         self::onPostUpdate( $comment->comment_post_ID );
     }
 
-    static private function _purgeAll()
-    {
-        $url = get_site_url(
-            null, '.*', 'http'
-        );
-
-        return self::_purgeURL( $url, 'regex' );
-    }
-
-    static private function _purgePage( $url, $children = false )
+    static public function purgePage( $url, $children = false )
     {
         $type = 'page';
 
         $baseParts = parse_url(
-            get_site_url( null, '', 'http' )
+            get_site_url( null, '/', 'http' )
         );
 
         $urlParts = parse_url( $url );
+        $urlParts['path'] = @$urlParts['path'] ?: '/';
+
+        // make sure $url path starts with baseUrl path
+        if( strpos( $urlParts['path'], $baseParts['path'] ) !== 0 ) {
+            $urlParts['path'] = rtrim( $baseParts['path'], '/' ) .'/'. ltrim( $urlParts['path'], '/' );
+        }
+        // cleanup path so that it starts and ends with a /
+        $urlParts['path'] = trim( $urlParts['path'], '/' );
+        $urlParts['path'] = $urlParts['path'] ? "/{$urlParts['path']}/" : '/';
 
         $url = $baseParts['scheme'] .'://'. $baseParts['host'] . $urlParts['path'];
 
@@ -142,6 +142,15 @@ class UMVarnish {
         return self::_purgeURL( $url, $type );
     }
 
+    static private function _purgeAll()
+    {
+        $url = get_site_url(
+            null, '.*', 'http'
+        );
+
+        return self::_purgeURL( $url, 'regex' );
+    }
+
     static private function _purgeURL( $url, $type = 'page' )
     {
         // check for Wordpress MU Domain Mapping Plugin usage
@@ -151,7 +160,7 @@ class UMVarnish {
             $urlParts = parse_url( $url );
 
             if( $urlParts['host'] != $mapParts['host'] ) {
-                $url = str_replace( $urlParts['host'], $mapParts['host'], $url );
+                $url = rtrim( $urlParts['scheme'] .'://'. $mapParts['host'] . $urlParts['path'] .'?'. @$urlParts['query'], '?' );
             }
         }
 
@@ -234,15 +243,17 @@ class UMVarnish {
                     )
                 ));
 
-                $wp_admin_bar->add_menu(array(
-                    'parent' => 'umich-varnish-root',
-                    'id'     => 'umich-varnish-purge-section',
-                    'title'  => 'Purge Section',
-                    'href'   => '#',
-                    'meta'   => array(
-                        'onclick' => 'return umVarnishPurge("section");'
-                    )
-                ));
+                if( get_option( 'permalink_structure' ) ) {
+                    $wp_admin_bar->add_menu(array(
+                        'parent' => 'umich-varnish-root',
+                        'id'     => 'umich-varnish-purge-section',
+                        'title'  => 'Purge Section',
+                        'href'   => '#',
+                        'meta'   => array(
+                            'onclick' => 'return umVarnishPurge("section");'
+                        )
+                    ));
+                }
             }
         }
     }
@@ -279,18 +290,23 @@ class UMVarnish {
                 case 'page':
                     if( $url ) {
                         // TRIGGER PAGE PURGE
-                        $return['status'] = self::_purgePage( $url );
+                        $return['status'] = self::purgePage( $url );
                     }
                     break;
 
                 case 'section':
-                    if( $url ) {
+                    if( $url && get_option( 'permalink_structure' ) ) {
                         // TRIGGER PAGE PURGE
                         $urlParts = parse_url( $url );
+
+                        // get the first segement of the url
                         list( $path ) = explode( '/', trim( $urlParts['path'], '/' ) );
                         $path = $path ? "/{$path}/" : '/';
+
+                        // update url so that its the path of the first segment instead of full url
                         $url = str_replace( $urlParts['path'], $path, $url );
-                        $return['status'] = self::_purgePage( $url, true );
+
+                        $return['status'] = self::purgePage( $url, true );
                     }
                     break;
 
