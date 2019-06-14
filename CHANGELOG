@@ -1,4 +1,4 @@
-1.2.1 (2019-06-12)
+1.2.1 (2019-06-14)
 ==================
 fix potential issue with PURGE request happening during a PURGE request
 fix PURGE request to paths that are for files containing a traling /
