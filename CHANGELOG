@@ -1,3 +1,8 @@
+1.2.1 (2019-06-12)
+==================
+fix potential issue with PURGE request happening during a PURGE request
+fix PURGE request to paths that are for files containing a traling /
+
 1.2 (2019-06-12)
 ================
 convert _purgePage() to private purgePage()

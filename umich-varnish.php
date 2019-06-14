@@ -3,7 +3,7 @@
  * Plugin Name: U-M: Varnish Cache
  * Plugin URI: https://github.com/umdigital/umich-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.2
+ * Version: 1.2.1
  * Author: U-M: Digital
  * Author URI: http://vpcomm.umich.edu
  */
@@ -129,7 +129,12 @@ class UMVarnish {
         }
         // cleanup path so that it starts and ends with a /
         $urlParts['path'] = trim( $urlParts['path'], '/' );
-        $urlParts['path'] = $urlParts['path'] ? "/{$urlParts['path']}/" : '/';
+        if( preg_match( '#\..{2,3}$#', $urlParts['path'] ) ) {
+            $urlParts['path'] = '/'. $urlParts['path'];
+        }
+        else {
+            $urlParts['path'] = $urlParts['path'] ? "/{$urlParts['path']}" : '/';
+        }
 
         $url = $baseParts['scheme'] .'://'. $baseParts['host'] . $urlParts['path'];
 
@@ -153,6 +158,17 @@ class UMVarnish {
 
     static private function _purgeURL( $url, $type = 'page' )
     {
+        $ret = array(
+            'url' => $url,
+            'res' => 'unknown'
+        );
+
+        // if this request is already a purge request then don't performa another one
+        if( @$_SERVER['REQUEST_METHOD'] == 'PURGE' ) {
+            $ret['res'] = 'Already a PURGE request';
+            return $ret;
+        }
+
         // check for Wordpress MU Domain Mapping Plugin usage
         // force host to the live version
         if( function_exists( 'domain_mapping_siteurl' ) ) {
@@ -163,11 +179,6 @@ class UMVarnish {
                 $url = rtrim( $urlParts['scheme'] .'://'. $mapParts['host'] . $urlParts['path'] .'?'. @$urlParts['query'], '?' );
             }
         }
-
-        $ret = array(
-            'url' => $url,
-            'res' => 'unknown'
-        );
 
         $res = wp_remote_request(
             $url,
