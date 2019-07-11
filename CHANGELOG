@@ -1,3 +1,8 @@
+1.2.2 (2019-07-11)
+==================
+fix issue with trailing / for purgePage requests
+add check for AUTOSAVE during save_post hook
+
 1.2.1 (2019-06-14)
 ==================
 fix potential issue with PURGE request happening during a PURGE request

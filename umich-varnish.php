@@ -3,7 +3,7 @@
  * Plugin Name: U-M: Varnish Cache
  * Plugin URI: https://github.com/umdigital/umich-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.2.1
+ * Version: 1.2.2
  * Author: U-M: Digital
  * Author URI: http://vpcomm.umich.edu
  */
@@ -101,6 +101,9 @@ class UMVarnish {
 
     static public function onPostUpdate( $pID )
     {
+        // Stop the script when doing autosave
+        if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+
         // PURGE POST URL
         self::purgePage( get_the_permalink( $pID ) );
     }
@@ -133,7 +136,7 @@ class UMVarnish {
             $urlParts['path'] = '/'. $urlParts['path'];
         }
         else {
-            $urlParts['path'] = $urlParts['path'] ? "/{$urlParts['path']}" : '/';
+            $urlParts['path'] = $urlParts['path'] ? "/{$urlParts['path']}/" : '/';
         }
 
         $url = $baseParts['scheme'] .'://'. $baseParts['host'] . $urlParts['path'];
