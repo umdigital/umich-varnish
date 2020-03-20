@@ -3,7 +3,7 @@
  * Plugin Name: U-M: Varnish Cache
  * Plugin URI: https://github.com/umdigital/umich-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.2.2
+ * Version: 1.3.0
  * Author: U-M: Digital
  * Author URI: http://vpcomm.umich.edu
  */
@@ -49,6 +49,16 @@ class UMVarnish {
             ));
         }
 
+        // IF LOGGED IN COOKIE AND COOKIE STALE (not logged in), LOGOUT
+        add_action( 'init', function(){
+            if( isset( $_COOKIE[ LOGGED_IN_COOKIE ] ) && !is_user_logged_in() ) {
+                setcookie( TEST_COOKIE, '', -3600, SITECOOKIEPATH, COOKIE_DOMAIN, $secure );
+                wp_logout();
+                wp_redirect( $_SERVER['REQUEST_URI'] );
+                exit;
+            }
+        });
+
         /** GLOBAL CHANGES: FULL SITE PURGE **/
         // Theme Updates
         add_action( 'switch_theme',         array( __CLASS__, 'onThemeChange' ) );
@@ -59,7 +69,7 @@ class UMVarnish {
 
         /** SPECIFIC PAGE UPDATES: SINGLE PAGE PURGE **/
         // Post Updates
-        add_action( 'save_post', array( __CLASS__, 'onPostUpdate' ) );
+        add_action( 'save_post', array( __CLASS__, 'onPostUpdate' ), 10, 2 );
 
         // New Comment OR Status Change
         add_action( 'comment_post',          array( __CLASS__, 'onCommentUpdate' ) );
@@ -99,13 +109,28 @@ class UMVarnish {
         return $instance;
     }
 
-    static public function onPostUpdate( $pID )
+    static public function onPostUpdate( $pID, $post )
     {
         // Stop the script when doing autosave
         if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 
         // PURGE POST URL
         self::purgePage( get_the_permalink( $pID ) );
+
+        // Purge post type archive
+        if( $pArchiveUrl = get_post_type_archive_link( $post->post_type ) ) {
+            self::purgePage( $pArchiveUrl, true );
+        }
+
+        // Purge taxonomy archives
+        foreach( get_object_taxonomies( $post ) as $tax ) {
+            foreach( get_the_terms( $pID, $tax ) as $term ) {
+                self::purgePage(
+                    get_term_link( $term->term_id ),
+                    true
+                );
+            }
+        }
     }
 
     static public function onCommentUpdate( $cID )
