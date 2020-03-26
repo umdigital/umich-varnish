@@ -3,7 +3,7 @@
  * Plugin Name: U-M: Varnish Cache
  * Plugin URI: https://github.com/umdigital/umich-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.3.0
+ * Version: 1.3.1
  * Author: U-M: Digital
  * Author URI: http://vpcomm.umich.edu
  */
@@ -136,8 +136,9 @@ class UMVarnish {
     static public function onCommentUpdate( $cID )
     {
         $comment = get_comment( $cID );
+        $post    = get_post( $comment->comment_post_ID );
 
-        self::onPostUpdate( $comment->comment_post_ID );
+        self::onPostUpdate( $comment->comment_post_ID, $post );
     }
 
     static public function purgePage( $url, $children = false )
