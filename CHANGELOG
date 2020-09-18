@@ -1,3 +1,8 @@
+1.3.2 (2020-09-18)
+==================
+bugfix get_the_terms usage
+tweak stale session logout process
+
 1.3.1 (2020-03-25)
 ==================
 bugfix comment update page purge error

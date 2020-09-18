@@ -3,7 +3,7 @@
  * Plugin Name: U-M: Varnish Cache
  * Plugin URI: https://github.com/umdigital/umich-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: U-M: Digital
  * Author URI: http://vpcomm.umich.edu
  */
@@ -52,8 +52,14 @@ class UMVarnish {
         // IF LOGGED IN COOKIE AND COOKIE STALE (not logged in), LOGOUT
         add_action( 'init', function(){
             if( isset( $_COOKIE[ LOGGED_IN_COOKIE ] ) && !is_user_logged_in() ) {
+                add_action( 'wp_logout', function(){
+                    wp_redirect( $_SERVER['REQUEST_URI'] );
+                    exit;
+                });
+
                 setcookie( TEST_COOKIE, '', -3600, SITECOOKIEPATH, COOKIE_DOMAIN, $secure );
                 wp_logout();
+
                 wp_redirect( $_SERVER['REQUEST_URI'] );
                 exit;
             }
@@ -124,7 +130,7 @@ class UMVarnish {
 
         // Purge taxonomy archives
         foreach( get_object_taxonomies( $post ) as $tax ) {
-            foreach( get_the_terms( $pID, $tax ) as $term ) {
+            foreach( (get_the_terms( $pID, $tax ) ?: array()) as $term ) {
                 self::purgePage(
                     get_term_link( $term->term_id ),
                     true
