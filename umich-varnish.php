@@ -3,7 +3,7 @@
  * Plugin Name: U-M: Varnish Cache
  * Plugin URI: https://github.com/umdigital/umich-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.3.3
+ * Version: 1.3.4
  * Author: U-M: Digital
  * Author URI: http://vpcomm.umich.edu
  */
@@ -57,7 +57,7 @@ class UMVarnish {
                     exit;
                 });
 
-                setcookie( TEST_COOKIE, '', -3600, SITECOOKIEPATH, COOKIE_DOMAIN, $secure );
+                setcookie( TEST_COOKIE, '', -3600, SITECOOKIEPATH, COOKIE_DOMAIN );
                 wp_logout();
 
                 wp_redirect( $_SERVER['REQUEST_URI'] );
