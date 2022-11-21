@@ -3,7 +3,7 @@
  * Plugin Name: U-M: Varnish Cache
  * Plugin URI: https://github.com/umdigital/umich-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.3.2
+ * Version: 1.3.3
  * Author: U-M: Digital
  * Author URI: http://vpcomm.umich.edu
  */
@@ -123,28 +123,31 @@ class UMVarnish {
         // PURGE POST URL
         self::purgePage( get_the_permalink( $pID ) );
 
-        // Purge post type archive
-        if( $pArchiveUrl = get_post_type_archive_link( $post->post_type ) ) {
-            self::purgePage( $pArchiveUrl, true );
-        }
+        if( $post ) {
+            // Purge post type archive
+            if( $pArchiveUrl = get_post_type_archive_link( $post->post_type ) ) {
+                self::purgePage( $pArchiveUrl, true );
+            }
 
-        // Purge taxonomy archives
-        foreach( get_object_taxonomies( $post ) as $tax ) {
-            foreach( (get_the_terms( $pID, $tax ) ?: array()) as $term ) {
-                self::purgePage(
-                    get_term_link( $term->term_id ),
-                    true
-                );
+            // Purge taxonomy archives
+            foreach( get_object_taxonomies( $post ) as $tax ) {
+                foreach( (get_the_terms( $pID, $tax ) ?: array()) as $term ) {
+                    self::purgePage(
+                        get_term_link( $term->term_id ),
+                        true
+                    );
+                }
             }
         }
     }
 
     static public function onCommentUpdate( $cID )
     {
-        $comment = get_comment( $cID );
-        $post    = get_post( $comment->comment_post_ID );
+        if( $comment = get_comment( $cID ) ) {
+            $post    = get_post( $comment->comment_post_ID );
 
-        self::onPostUpdate( $comment->comment_post_ID, $post );
+            self::onPostUpdate( $comment->comment_post_ID, $post );
+        }
     }
 
     static public function purgePage( $url, $children = false )
