@@ -3,7 +3,7 @@
  * Plugin Name: University of Michigan: Varnish Cache
  * Plugin URI: https://github.com/umdigital/umich-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.3.5
+ * Version: 1.3.6
  * Author: U-M: OVPC Digital
  * Author URI: http://vpcomm.umich.edu
  * Update URI: https://github.com/umdigital/umich-varnish/releases/latest
