@@ -52,6 +52,12 @@ class UMVarnish {
                 wp_redirect( $_SERVER['REQUEST_URI'] );
                 exit;
             }
+            // NOT LOGGED IN AND HAS TEST COOKIE (remove test cookie)
+            else if( !isset( $_COOKIE[ LOGGED_IN_COOKIE ] ) && isset( $_COOKIE[ TEST_COOKIE ] ) ) {
+                setcookie( TEST_COOKIE, '', -3600, SITECOOKIEPATH, COOKIE_DOMAIN );
+                wp_redirect( $_SERVER['REQUEST_URI'] );
+                exit;
+            }
         });
 
         /** GLOBAL CHANGES: FULL SITE PURGE **/
