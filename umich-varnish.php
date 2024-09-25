@@ -3,7 +3,7 @@
  * Plugin Name: University of Michigan: Varnish Cache
  * Plugin URI: https://github.com/umdigital/umich-varnish/
  * Description: Provides varnish cache purging functionality.
- * Version: 1.3.6
+ * Version: 1.3.7
  * Author: U-M: OVPC Digital
  * Author URI: http://vpcomm.umich.edu
  * Update URI: https://github.com/umdigital/umich-varnish/releases/latest
@@ -46,7 +46,11 @@ class UMVarnish {
                     exit;
                 });
 
-                setcookie( TEST_COOKIE, '', -3600, SITECOOKIEPATH, COOKIE_DOMAIN );
+                setcookie( TEST_COOKIE, '', -3600, COOKIEPATH, COOKIE_DOMAIN );
+
+                if( COOKIEPATH !== SITECOOKIEPATH ) {
+                    setcookie( TEST_COOKIE, '', -3600, SITECOOKIEPATH, COOKIE_DOMAIN );
+                }
                 wp_logout();
 
                 wp_redirect( $_SERVER['REQUEST_URI'] );
@@ -54,9 +58,11 @@ class UMVarnish {
             }
             // NOT LOGGED IN AND HAS TEST COOKIE (remove test cookie)
             else if( !isset( $_COOKIE[ LOGGED_IN_COOKIE ] ) && isset( $_COOKIE[ TEST_COOKIE ] ) ) {
-                setcookie( TEST_COOKIE, '', -3600, SITECOOKIEPATH, COOKIE_DOMAIN );
-                wp_redirect( $_SERVER['REQUEST_URI'] );
-                exit;
+                setcookie( TEST_COOKIE, '', -3600, COOKIEPATH, COOKIE_DOMAIN );
+
+                if( COOKIEPATH !== SITECOOKIEPATH ) {
+                    setcookie( TEST_COOKIE, '', -3600, SITECOOKIEPATH, COOKIE_DOMAIN );
+                }
             }
         });
 
